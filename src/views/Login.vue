@@ -33,6 +33,7 @@
                                                         Me</label>
                                                 </div>
                                             </div>
+                                            <div style="color: red;" v-if="errorLogin">{{ errorLogin }}</div>
                                             <a @click.prevent="loginn" class="btn btn-primary btn-user btn-block">
                                                 Login
                                             </a>
@@ -78,19 +79,30 @@ export default {
         return {
             user: {
                 userName: '',
-                userPassword: ''
-            }
+                userPassword: '',
+                userRole: 'guest'
+            }, 
+            errorLogin: null
         }
     },
     methods: {
         loginn() {
             login(this.user)
                 .then((response) => {
-                    if (response.data === 'Login success') {
-                        // Redirect to admin page
-                        window.location.href = '/admin';
+                    if (response.data.status === true) {
+                        // const userRole = response.user.role;
+                        if (response.data.userRole === 'admin') {
+                            // Redirect to admin page
+                            window.location.href = '/admin';
+                        } else if (response.data.userRole === 'user') {
+                            // Redirect to customer page
+                            window.location.href = '/customer';
+                        }
                     }
-                })
+                }).catch(error => {
+        //   this.errorLogin = error.response.data
+        this.errorLogin = error.response
+        })
         },
     }
 }
