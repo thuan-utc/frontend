@@ -14,7 +14,7 @@
 
                 <hr class="sidebar-divider my-0">
 
-                <li class="nav-item active">
+                <li class="nav-item" :class="{ 'active': currentComponent === 'Dashboard' }">
                     <div class="nav-link" @click="showComponent('Dashboard')">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <span>Dashboard</span>
@@ -36,28 +36,26 @@
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <h6 class="collapse-header">Type:</h6>
-                            <a class="collapse-item" @click="showComponent('ListPendingBill')">List bills pending</a>
-                            <a class="collapse-item" @click="showComponent('ListPaidBill')">List bills paid</a>
+                            <a class="collapse-item" @click="showComponent('ListPendingBill')"
+                                :class="{ 'active': currentComponent === 'ListPendingBill' }">List bills pending</a>
+                            <a class="collapse-item" @click="showComponent('ListPaidBill')"
+                                :class="{ 'active': currentComponent === 'ListPaidBill' }">List bills paid</a>
                         </div>
                     </div>
                 </li>
 
-                <li class="nav-item" @click="showComponent('Dashboard')">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                        aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fa-solid fa-file-user fa-beat fa-xl"></i>
-                        <span>Manage accounts</span>
-                    </a>
-                    <!-- <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                            data-parent="#accordionSidebar">
-                            <div class="bg-white py-2 collapse-inner rounded">
-                                <h6 class="collapse-header">Custom Utilities:</h6>
-                                <a class="collapse-item" href="utilities-color.html">Colors</a>
-                                <a class="collapse-item" href="utilities-border.html">Borders</a>
-                                <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                                <a class="collapse-item" href="utilities-other.html">Other</a>
-                            </div>
-                        </div> -->
+                <li class="nav-item" :class="{ 'active': currentComponent === 'CustomerAccounts' }">
+                    <div class="nav-link" @click="showComponent('CustomerAccounts')">
+                        <!-- <i class="fas fa-fw fa-tachometer-alt"></i> -->
+                        <span>Manage Customer Account</span>
+                    </div>
+                </li>
+
+                <li class="nav-item" :class="{ 'active': currentComponent === 'ManageInternetPackages' }">
+                    <div class="nav-link" @click="showComponent('ManageInternetPackages')">
+                        <!-- <i class="fas fa-fw fa-tachometer-alt"></i> -->
+                        <span>Manage Internet Packages</span>
+                    </div>
                 </li>
 
                 <!-- <hr class="sidebar-divider"> -->
@@ -195,7 +193,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" @click.prevent="logout">Logout</a>
                 </div>
             </div>
         </div>
@@ -215,11 +213,24 @@ import '../assets/vendor/jquery/jquery.min.js'
 import Dashboard from '../components/admin/AdminDashboard.vue'
 import ListPaidBill from '../components/admin/ListPaidBill.vue'
 import ListPendingBill from '../components/admin/ListPendingBill.vue'
+import CustomerAccounts from '../components/admin/CustomerAccounts.vue'
+import ManagePackages from '../components/admin/ManageInternetPackages.vue'
 export default {
     data() {
         return {
             isSidebarCollapsed: false,
             currentComponent: Dashboard
+        }
+    },
+    computed: {
+        pages() {
+            const start = Math.max(1, this.currentPage - 2);
+            const end = Math.min(this.totalPages, start + 4);
+            const pagesArray = [];
+            for (let i = start; i <= end; i++) {
+                pagesArray.push(i);
+            }
+            return pagesArray;
         }
     },
     methods: {
@@ -228,12 +239,33 @@ export default {
         },
         toggleSidebar() {
             this.isSidebarCollapsed = !this.isSidebarCollapsed;
+        },
+        gotoPage(page) {
+            this.currentPage = page;
+            this.searchBy();
+        },
+        previousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+                this.searchBy();
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+                this.searchBy();
+            }
+        },
+        logout() {
+            window.location.href = '/';
         }
     },
     components: {
         Dashboard,
         ListPaidBill,
-        ListPendingBill
+        ListPendingBill,
+        CustomerAccounts,
+        ManageInternetPackages
     }
 }
 </script>

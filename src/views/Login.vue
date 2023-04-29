@@ -73,7 +73,7 @@ import '../assets/vendor/bootstrap/js/bootstrap.bundle.min.js'
 import '../assets/vendor/jquery-easing/jquery.easing.min.js'
 import '../assets/js/sb-admin-2.min.js'
 
-import { login } from '../utils/login.js'
+import { login } from '../utils/login-api.js'
 export default {
     data() {
         return {
@@ -100,8 +100,7 @@ export default {
                         }
                     }
                 }).catch(error => {
-        //   this.errorLogin = error.response.data
-        this.errorLogin = error.response
+        this.errorLogin = error.response.data
         })
         },
     }

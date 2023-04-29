@@ -1,0 +1,3 @@
+<template>
+    manage packages
+</template>

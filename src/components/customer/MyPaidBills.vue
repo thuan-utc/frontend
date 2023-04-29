@@ -42,24 +42,18 @@
                                             <th>Customer Name</th>
                                             <th>Amount</th>
                                             <th>Due Date</th>
-                                            <th>Created Date</th>
+                                            <th>Pay Date</th>
                                             <th>Status</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="bill in  tableData " :key="bill.id" @click="this.selectedRow = bill">
+                                        <tr v-for="bill in tableData" :key="bill.id" @click="this.selectedRow = bill">
                                             <td>{{ bill.customerId }}</td>
                                             <td>{{ bill.customerName }}</td>
                                             <td>{{ bill.amount }}</td>
                                             <td>{{ bill.dueDate }}</td>
                                             <td>{{ bill.createdDate }}</td>
                                             <td>{{ bill.billStatus }}</td>
-                                            <td>
-                                                <button class="btn-danger"
-                                                    @click="this.selectedRow = bill; sendRemindEmail()">Email
-                                                    remind</button>
-                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -68,40 +62,39 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-5">
                                 <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing {{
-                                    (parseInt(this.currentPage) - 1) * parseInt(this.perPage) + 1 }}
-                                    to {{ parseInt(((this.currentPage - 1) * this.perPage + this.perPage)) }} of {{
-                                    this.totalItems }}
+                                    (this.currentPage - 1) * this.perPage + 1 }}
+                                    to {{ parseInt(((this.currentPage - 1) * this.perPage + this.perPage)) }} of {{ this.totalItems }}
                                     entries</div>
                             </div>
                             <div class="col-sm-12 col-md-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
                                     <ul class="pagination">
                                         <li class="paginate_button page-item previous disabled" id="dataTable_previous"
-                                            :class=" { disabled: currentPage <= 1 } "><a @click.prevent=" previousPage "
+                                            :class="{ disabled: currentPage <= 1 }"><a @click.prevent="previousPage"
                                                 aria-controls="dataTable" data-dt-idx="0" tabindex="0"
                                                 class="page-link">Previous</a></li>
-                                        <template v-if=" totalPages <= 5 ">
-                                            <li class="paginate_button page-item" v-for=" page  in  pages " :key=" page "
-                                                :class=" { active: page === currentPage } "><a aria-controls="dataTable"
+                                        <template v-if="totalPages <= 5">
+                                            <li class="paginate_button page-item" v-for="page in pages" :key="page"
+                                                :class="{ active: page === currentPage }"><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
-                                                    @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
+                                                    @click.prevent="gotoPage(page)">{{ page }}</a></li>
                                         </template>
                                         <template v-else>
-                                            <li class="paginate_button page-item" v-for=" page  in  3 " :key=" page "
-                                                :class=" { active: page === currentPage } "><a aria-controls="dataTable"
+                                            <li class="paginate_button page-item" v-for="page in 3" :key="page"
+                                                :class="{ active: page === currentPage }"><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
-                                                    @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
+                                                    @click.prevent="gotoPage(page)">{{ page }}</a></li>
                                             <li class="paginate_button page-item disabled"><span>...</span></li>
                                             <li class="paginate_button page-item"
-                                                v-for=" page  in  [totalPages - 1, totalPages] " :key=" page "
-                                                :class=" { active: page === currentPage } "><a aria-controls="dataTable"
+                                                v-for="page in [totalPages - 1, totalPages]" :key="page"
+                                                :class="{ active: page === currentPage }"><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
-                                                    @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
+                                                    @click.prevent="gotoPage(page)">{{ page }}</a></li>
                                         </template>
                                         <li class="paginate_button page-item next" id="dataTable_next"
-                                            :class=" { disabled: currentPage >= totalPages } "><a href="#"
+                                            :class="{ disabled: currentPage >= totalPages }"><a href="#"
                                                 aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link"
-                                                @click.prevent=" nextPage ">Next</a></li>
+                                                @click.prevent="nextPage">Next</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -110,20 +103,11 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div v-if=" showStatusMessage " class="card mb-4 py-3 status-message"
-                :class=" statusMessage === 'SUCCESS' ? 'border-bottom-success' : 'border-bottom-danger' ">
-                <div class="card-body">
-                    {{ statusMessage }}
-                </div>
-            </div>
-        </div>
-
     </div>
 </template>
 
 <script>
-import { getPendingBills, sendRemindEmail } from "../../utils/listPendingBills-api.js"
+import { getPaidBills } from "../../utils/listPaidBills-api.js";
 export default {
     data() {
         return {
@@ -141,7 +125,6 @@ export default {
             selectedRow: {
                 id: '',
                 customerName: '',
-                customerId: '',
                 phoneNumber: '',
                 email: '',
                 address: ''
@@ -149,10 +132,7 @@ export default {
             showFormSearch: false,
             isEditing: false,
             isLoading: false,
-            isfirstSearchWithCriteria: true,
-            statusMessage: '',
-            showStatusMessage: false
-
+            isfirstSearchWithCriteria: true
         }
     },
     computed: {
@@ -167,43 +147,36 @@ export default {
         }
     },
     methods: {
-        getPendingList() {
-            getPendingBills(this.currentPage - 1, this.perPage).then((response) => {
+        getPaidBillList() {
+            getPaidBills(this.currentPage - 1, this.perPage).then((response) => {
                 this.tableData = response.content;
                 this.totalItems = response.totalElements;
                 this.totalPages = response.totalPages;
             })
         },
-        async sendRemindEmail() {
-            await sendRemindEmail(this.selectedRow.customerId, this.selectedRow.id).then((response) => {
-                this.statusMessage = response
-                this.showStatusMessage = true
-                setTimeout(() => this.isHidden = false, 2000);
-                this.showStatusMessage = false
-                this.statusMessage = ''
-                alert("SENT " + response)
-            })
+        sendEmail () {
+            
         },
         gotoPage(page) {
             this.currentPage = page;
-            this.getPendingList();
+            this.getPaidBillList();
         },
         previousPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
-                this.getPendingList();
+                this.getPaidBillList();
             }
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {
                 this.currentPage++;
-                this.getPendingList();
+                this.getPaidBillList();
             }
-        },
+        }
     },
     mounted() {
         // this.searchBy();
-        this.getPendingList();
+        this.getPaidBillList();
     }
 }
 </script>
@@ -239,28 +212,4 @@ div.dataTables_filter label {
     font-weight: normal;
     white-space: nowrap;
     text-align: left;
-}
-
-.status-message {
-    position: absolute;
-    bottom: 10px;
-    right: 0px;
-    width: 30%;
-    animation-name: fadeOut;
-    animation-duration: 2s;
-
-    z-index: 9999;
-    display: flex;
-    flex-direction: row-reverse;
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-</style>
+}</style>

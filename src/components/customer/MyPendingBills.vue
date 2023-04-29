@@ -48,7 +48,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="bill in  tableData " :key="bill.id" @click="this.selectedRow = bill">
+                                        <tr v-for="bill in   tableData  " :key="bill.id" @click="this.selectedRow = bill">
                                             <td>{{ bill.customerId }}</td>
                                             <td>{{ bill.customerName }}</td>
                                             <td>{{ bill.amount }}</td>
@@ -57,8 +57,8 @@
                                             <td>{{ bill.billStatus }}</td>
                                             <td>
                                                 <button class="btn-danger"
-                                                    @click="this.selectedRow = bill; sendRemindEmail()">Email
-                                                    remind</button>
+                                                    @click="this.selectedRow = bill; sendRemindEmail()">Pay now
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -81,19 +81,19 @@
                                                 aria-controls="dataTable" data-dt-idx="0" tabindex="0"
                                                 class="page-link">Previous</a></li>
                                         <template v-if=" totalPages <= 5 ">
-                                            <li class="paginate_button page-item" v-for=" page  in  pages " :key=" page "
+                                            <li class="paginate_button page-item" v-for="  page   in   pages  " :key=" page "
                                                 :class=" { active: page === currentPage } "><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
                                                     @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
                                         </template>
                                         <template v-else>
-                                            <li class="paginate_button page-item" v-for=" page  in  3 " :key=" page "
+                                            <li class="paginate_button page-item" v-for="  page   in   3  " :key=" page "
                                                 :class=" { active: page === currentPage } "><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
                                                     @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
                                             <li class="paginate_button page-item disabled"><span>...</span></li>
                                             <li class="paginate_button page-item"
-                                                v-for=" page  in  [totalPages - 1, totalPages] " :key=" page "
+                                                v-for="  page   in   [totalPages - 1, totalPages]  " :key=" page "
                                                 :class=" { active: page === currentPage } "><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
                                                     @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { getPendingBills, sendRemindEmail } from "../../utils/listPendingBills-api.js"
+import { getPendingBills, sendRemindEmail } from "../../utils/listPendingBills-api.js";
 export default {
     data() {
         return {
