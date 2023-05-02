@@ -48,7 +48,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="bill in   tableData  " :key="bill.id" @click="this.selectedRow = bill">
+                                        <tr v-for="bill in    tableData   " :key="bill.id" @click="this.selectedRow = bill">
                                             <td>{{ bill.customerId }}</td>
                                             <td>{{ bill.customerName }}</td>
                                             <td>{{ bill.amount }}</td>
@@ -56,8 +56,7 @@
                                             <td>{{ bill.createdDate }}</td>
                                             <td>{{ bill.billStatus }}</td>
                                             <td>
-                                                <button class="btn-danger"
-                                                    @click="this.selectedRow = bill; sendRemindEmail()">Pay now
+                                                <button class="btn-info" @click="this.selectedRow = bill; payBill()">Pay now
                                                 </button>
                                             </td>
                                         </tr>
@@ -81,19 +80,19 @@
                                                 aria-controls="dataTable" data-dt-idx="0" tabindex="0"
                                                 class="page-link">Previous</a></li>
                                         <template v-if=" totalPages <= 5 ">
-                                            <li class="paginate_button page-item" v-for="  page   in   pages  " :key=" page "
-                                                :class=" { active: page === currentPage } "><a aria-controls="dataTable"
-                                                    data-dt-idx="2" tabindex="0" class="page-link"
+                                            <li class="paginate_button page-item" v-for="   page    in    pages   "
+                                                :key=" page " :class=" { active: page === currentPage } "><a
+                                                    aria-controls="dataTable" data-dt-idx="2" tabindex="0" class="page-link"
                                                     @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
                                         </template>
                                         <template v-else>
-                                            <li class="paginate_button page-item" v-for="  page   in   3  " :key=" page "
+                                            <li class="paginate_button page-item" v-for="   page    in    3   " :key=" page "
                                                 :class=" { active: page === currentPage } "><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
                                                     @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
                                             <li class="paginate_button page-item disabled"><span>...</span></li>
                                             <li class="paginate_button page-item"
-                                                v-for="  page   in   [totalPages - 1, totalPages]  " :key=" page "
+                                                v-for="   page    in    [totalPages - 1, totalPages]   " :key=" page "
                                                 :class=" { active: page === currentPage } "><a aria-controls="dataTable"
                                                     data-dt-idx="2" tabindex="0" class="page-link"
                                                     @click.prevent=" gotoPage(page) ">{{ page }}</a></li>
@@ -110,20 +109,41 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
             <div v-if=" showStatusMessage " class="card mb-4 py-3 status-message"
                 :class=" statusMessage === 'SUCCESS' ? 'border-bottom-success' : 'border-bottom-danger' ">
                 <div class="card-body">
                     {{ statusMessage }}
                 </div>
             </div>
-        </div>
+        </div> -->
 
+    </div>
+    <!-- Pay model -->
+    <div v-if=" showPayModel " class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Confirm to pay bill</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" @click.prevent=" payBill ">Pay</a>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import { getPendingBills, sendRemindEmail } from "../../utils/listPendingBills-api.js";
+import 'https://code.jquery.com/jquery-3.6.0.min.js'
+import { getMyPendingBills, payBill } from "../../utils/listPendingBills-api.js";
+
 export default {
     data() {
         return {
@@ -151,8 +171,7 @@ export default {
             isLoading: false,
             isfirstSearchWithCriteria: true,
             statusMessage: '',
-            showStatusMessage: false
-
+            showPayModel: false
         }
     },
     computed: {
@@ -166,22 +185,29 @@ export default {
             return pagesArray;
         }
     },
+    props: {
+        userName: {
+            type: String,
+            required: true
+        }
+    },
     methods: {
         getPendingList() {
-            getPendingBills(this.currentPage - 1, this.perPage).then((response) => {
+            getMyPendingBills(this.currentPage - 1, this.perPage, this.userName).then((response) => {
                 this.tableData = response.content;
                 this.totalItems = response.totalElements;
                 this.totalPages = response.totalPages;
             })
         },
-        async sendRemindEmail() {
-            await sendRemindEmail(this.selectedRow.customerId, this.selectedRow.id).then((response) => {
-                this.statusMessage = response
-                this.showStatusMessage = true
+        async payBill() {
+            await payBill(this.selectedRow.id).then((response) => {
+                this.statusMessage = response;
+                this.showStatusMessage = true;
                 setTimeout(() => this.isHidden = false, 2000);
-                this.showStatusMessage = false
-                this.statusMessage = ''
-                alert("SENT " + response)
+                this.showStatusMessage = false;
+                this.statusMessage = '';
+                alert("Pay successfully");
+                this.getPendingList();
             })
         },
         gotoPage(page) {
@@ -202,7 +228,6 @@ export default {
         },
     },
     mounted() {
-        // this.searchBy();
         this.getPendingList();
     }
 }

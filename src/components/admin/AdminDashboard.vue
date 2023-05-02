@@ -16,10 +16,10 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Earnings (Monthly)</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ this.totalMoney }} vnd</div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -32,11 +32,11 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Earnings (Annual)</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                    Number of customers</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ this.totalCustomer }}</div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -48,11 +48,12 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Paid Bill (Monthly)
                                 </div>
                                 <div class="row no-gutters align-items-center">
                                     <div class="col-auto">
-                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ this.totalPaidBill }}
+                                        </div>
                                     </div>
                                     <div class="col">
                                         <div class="progress progress-sm mr-2">
@@ -76,8 +77,8 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Pending Requests</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                    Pending Bills (All)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ this.totalPendingBill }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -244,3 +245,29 @@
 
     </div>
 </template>
+<script>
+import { getDashboardData } from '../../utils/dashboard-api'
+export default {
+    data() {
+        return {
+            totalMoney: '',
+            totalCustomer: '',
+            totalPaidBill: '',
+            totalPendingBill: ''
+        }
+    },
+    methods: {
+        getDashboardData() {
+            getDashboardData().then(response => {
+                this.totalMoney = response.totalMoneyMonthly
+                this.totalCustomer = response.totalCustomer
+                this.totalPaidBill = response.totalPaidBillMonthly
+                this.totalPendingBill = response.totalPendingBill
+            })
+        }
+    },
+    mounted() {
+        this.getDashboardData()
+    }
+}
+</script>

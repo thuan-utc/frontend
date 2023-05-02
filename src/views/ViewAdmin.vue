@@ -122,7 +122,7 @@
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">name</span>
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ userName }}</span>
                                     <img class="img-profile rounded-circle" src="../assets/img/undraw_profile.svg">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -214,12 +214,13 @@ import Dashboard from '../components/admin/AdminDashboard.vue'
 import ListPaidBill from '../components/admin/ListPaidBill.vue'
 import ListPendingBill from '../components/admin/ListPendingBill.vue'
 import CustomerAccounts from '../components/admin/CustomerAccounts.vue'
-import ManagePackages from '../components/admin/ManageInternetPackages.vue'
+import ManageInternetPackages from '../components/admin/ManageInternetPackages.vue'
 export default {
     data() {
         return {
             isSidebarCollapsed: false,
-            currentComponent: Dashboard
+            currentComponent: Dashboard,
+            userName: ''
         }
     },
     computed: {
@@ -266,6 +267,9 @@ export default {
         ListPendingBill,
         CustomerAccounts,
         ManageInternetPackages
+    },
+    mounted() {
+        this.userName = this.$route.params.userName
     }
 }
 </script>

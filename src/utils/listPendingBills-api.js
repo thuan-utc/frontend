@@ -1,6 +1,6 @@
 import axios from "axios"
 export {
-    getPendingBills, sendRemindEmail
+    getPendingBills, getMyPendingBills, sendRemindEmail, payBill
 };
 
 async function getPendingBills(currentPage, perPage) {
@@ -13,9 +13,29 @@ async function getPendingBills(currentPage, perPage) {
     }
 }
 
-async function sendRemindEmail(customerId, billId) {
+async function getMyPendingBills(currentPage, perPage, userName) {
     try {
-        const response = await axios.get(`http://localhost:8090/bill/${customerId}/${billId}/send-remind-email`);
+        const response = await axios.get(`http://localhost:8090/bill/${userName}/get-pending-bill?pageNumber=${currentPage}&pageSize=${perPage}`);
+        return response.data;
+    } catch(error) {
+        alert('An error occurred: ' + error.message);
+        return [];
+    }
+}
+
+async function sendRemindEmail(userName, billId) {
+    try {
+        const response = await axios.get(`http://localhost:8090/bill/${userName}/${billId}/send-remind-email`);
+        return response.data;
+    } catch(error) {
+        alert('An error occurred: ' + error.message);
+        return 'Error';
+    }
+}
+
+async function payBill(billId) {
+    try {
+        const response = await axios.get(`http://localhost:8090/bill/${billId}/pay`);
         return response.data;
     } catch(error) {
         alert('An error occurred: ' + error.message);

@@ -14,8 +14,8 @@
 
                 <hr class="sidebar-divider my-0">
 
-                <li class="nav-item" :class="{ 'active': currentComponent === 'Dashboard' }">
-                    <div class="nav-link" @click="showComponent('Dashboard')">
+                <li class="nav-item" :class="{ 'active': currentComponent === 'InternetPackages' }">
+                    <div class="nav-link" @click="showComponent('InternetPackages')">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <span>Internet packages</span>
                     </div>
@@ -122,7 +122,7 @@
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">name</span>
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{userName}}</span>
                                     <img class="img-profile rounded-circle" src="../assets/img/undraw_profile.svg">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -152,7 +152,7 @@
                     </nav>
 
                     <div id="mycontent">
-                        <component :is="currentComponent"></component>
+                        <component :is="currentComponent" :user-name="userName"></component>
                     </div>
 
 
@@ -193,6 +193,8 @@
             </div>
         </div>
     </div>
+
+    <!--  -->
 </template> 
 
 <script>
@@ -214,7 +216,8 @@ export default {
     data() {
         return {
             isSidebarCollapsed: false,
-            currentComponent: InternetPackages
+            currentComponent: InternetPackages,
+            userName: ''
         }
     },
     methods: {
@@ -234,6 +237,9 @@ export default {
         MyPaidBills,
         MyPendingBills,
         Setting
+    },
+    mounted() {
+        this.userName = this.$route.params.userName
     }
 }
 </script>

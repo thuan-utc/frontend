@@ -2,8 +2,8 @@
     <div class="container-fluid">
         <h1 class="h3 mb-2 text-gray-800">Pick your packages</h1>
         <div class="row">
-            <div class="col-6" id="tablePackages" v-for="p in tableData" :key="p.id" @click="this.selectedRow = p">
-                <img src="../../assets/img/package.jpg" alt="package">
+            <div class="col-4" id="tablePackages" v-for="p in tableData" :key="p.id" @click="this.selectedRow = p">
+                <img src="../../assets/img/package.png" alt="package">
                 <div class="featured__item__text">
                     <h6>Name: {{ p.packageName }}</h6>
                     <h6>Price: {{ p.price }}</h6>
@@ -45,6 +45,9 @@ export default {
             showStatusMessage: false
 
         }
+    },
+    props: {
+        userName: ''
     },
     computed: {
         pages() {

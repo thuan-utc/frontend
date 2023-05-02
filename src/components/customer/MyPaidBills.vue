@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { getPaidBills } from "../../utils/listPaidBills-api.js";
+import { getMyPaidBills } from "../../utils/listPaidBills-api.js";
 export default {
     data() {
         return {
@@ -146,9 +146,15 @@ export default {
             return pagesArray;
         }
     },
+    props: {
+        userName: {
+            type: String,
+            required: true
+        }
+    },
     methods: {
         getPaidBillList() {
-            getPaidBills(this.currentPage - 1, this.perPage).then((response) => {
+            getMyPaidBills(this.currentPage - 1, this.perPage, this.userName).then((response) => {
                 this.tableData = response.content;
                 this.totalItems = response.totalElements;
                 this.totalPages = response.totalPages;
@@ -175,7 +181,6 @@ export default {
         }
     },
     mounted() {
-        // this.searchBy();
         this.getPaidBillList();
     }
 }
