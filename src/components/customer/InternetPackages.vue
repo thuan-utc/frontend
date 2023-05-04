@@ -7,6 +7,8 @@
                 <div class="featured__item__text">
                     <h6>Name: {{ p.packageName }}</h6>
                     <h6>Price: {{ p.price }}</h6>
+                    <button class="btn btn-success" @click="submitPackage">Register now</button>
+                    <!-- <button class="btn btn-secondary">Current use </button> -->
                 </div>
             </div>
         </div>
@@ -14,36 +16,20 @@
 </template>
 
 <script>
-import { getAllPackages } from "../../utils/internetPackage-api"
+import { getAllPackagesForCustomer } from "../../utils/internetPackage-api"
+import { submitPackage } from '../../utils/contract-api'
 export default {
     data() {
         return {
-            searchId: '',
-            searchName: '',
-            searchPhone: '',
-            searchEmail: '',
-            searchAddress: '',
             searchCreatedDate: '',
             currentPage: 1,
             perPage: 10,
             totalItems: 0,
             totalPages: 0,
-            tableData: [],
-            selectedRow: {
-                id: '',
-                customerName: '',
-                customerId: '',
-                phoneNumber: '',
-                email: '',
-                address: ''
-            },
-            showFormSearch: false,
-            isEditing: false,
-            isLoading: false,
-            isfirstSearchWithCriteria: true,
             statusMessage: '',
-            showStatusMessage: false
-
+            showStatusMessage: false,
+            tableData: '',
+            selectedRow: ''
         }
     },
     props: {
@@ -62,10 +48,17 @@ export default {
     },
     methods: {
         getAllPackages() {
-            getAllPackages().then((response) => {
-                this.tableData = response;
-                // this.totalItems = response.totalElements;
-                // this.totalPages = response.totalPages;
+            getAllPackagesForCustomer().then((response) => {
+                this.tableData = response.content;
+            })
+        },
+        submitPackage() {
+            submitPackage(this.userName, this.selectedRow.id).then(response =>{
+                if (response === "SUCCESS") {
+                    alert("Register successfully");
+                } else {
+                    alert("Fail: " + response)
+                }
             })
         },
         gotoPage(page) {
