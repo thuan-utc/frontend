@@ -44,17 +44,9 @@
                                             <th>Due Date</th>
                                             <th>Created Date</th>
                                             <th>Status</th>
-                                            <th>Action</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
-                                    <!-- <tfoot>
-                                        <th>Customer Id</th>
-                                        <th>Customer Name</th>
-                                        <th>Amount</th>
-                                        <th>Due Date</th>
-                                        <th>Created Date</th>
-                                        <th>Status</th>
-                                    </tfoot> -->
                                     <tbody>
                                         <tr v-for="bill in tableData" :key="bill.id" @click="this.selectedRow = bill">
                                             <td>{{ bill.customerId }}</td>
@@ -63,9 +55,9 @@
                                             <td>{{ bill.dueDate }}</td>
                                             <td>{{ bill.createdDate }}</td>
                                             <td>{{ bill.billStatus }}</td>
-                                            <td>
+                                            <!-- <td>
                                                 <button class="btn-danger" @click="sendEmail">Email</button>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                     </tbody>
                                 </table>

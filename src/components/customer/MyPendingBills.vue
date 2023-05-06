@@ -208,6 +208,8 @@ export default {
                 this.statusMessage = '';
                 alert("Pay successfully");
                 this.getPendingList();
+            }).catch((error) => {
+                alert('An error occurred: ' + error.message);
             })
         },
         gotoPage(page) {

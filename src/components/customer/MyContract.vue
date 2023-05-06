@@ -51,8 +51,8 @@
                                         <tr v-for="contract in tableData  " :key="contract.id">
                                             <td>{{ contract.customerName }}</td>
                                             <td>{{ contract.packageName }}</td>
-                                            <td>{{ new Date(contract.startDate).toISOString().slice(0, 10) }}</td>
-                                            <td>{{ new Date(contract.endDate).toISOString().slice(0, 10) }}</td>
+                                            <td>{{ contract.startDate }}</td>
+                                            <td>{{ contract.endDate }}</td>
                                             <td>{{ new Date(contract.createdDate).toISOString().slice(0, 10) }}</td>
                                             <td>{{ contract.price }}K vnd</td>
                                             <td>{{ isExpired(contract.endDate) ? 'Expired' : 'Active' }} </td>
@@ -148,7 +148,6 @@ export default {
             isfirstSearchWithCriteria: true,
             statusMessage: '',
             showStatusMessage: false
-
         }
     },
     props: {
@@ -168,9 +167,9 @@ export default {
     methods: {
         getCustomerContract() {
             getContractByCustomer(this.currentPage - 1, this.perPage, this.userName).then((response) => {
-                this.tableData = response;
-                // this.totalItems = response.content.size;
-                // this.totalPages = response.content.size;
+                this.tableData = response.content;
+                this.totalItems = response.totalElements;
+                this.totalPages = response.totalPages;
             })
         },
         async cancelContract() {
